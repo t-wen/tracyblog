@@ -1,0 +1,47 @@
+1、解析ip，将域名与ip地址配对注册
+2、登录服务器
+3、cd /usr/local/src/  进入此路径下下载nodejs
+4、在CentOS 7服务器上安装Node.js.
+（wget http://nodejs.org/dist/v8.11.4/node-v8.11.4.tar.gz）,wget 后面的链接是网上搜在centos 服务器上安装nodejs的安装包上下载的
+https://nodejs.org/en/download/   node官网上链接复制下来到云服务器上安装（详情见图片）
+
+4、ls（下载完可以查看一下）
+5、下载下来的node是个node-v8.11.4-linux-x64.tar.xz，是一个压缩包来的，所以接下来我们就是要解压这个包
+6、解压包，在服务器上输入  tar -xf node-v8.11.4-linux-x64.tar.xz
+7、ls 查看可看到两个文件分别为：
+    node-v8.11.4-linux-x64.tar.xz       node-v8.11.4-linux-x64
+8、cd node-v8.11.4-linux-x64/－－－－进入node-v8.11.4-linux-x64
+9、ls －－－－－查看node-v8.11.4-linux-x64内文件可看到 bin  CHANGELOG.md   include   lib   LICENSE  README.md  share
+10、cd bin  -----进入bin文件路径
+11、ls  －－－－－查看 bin 文件夹内含有内容有：node  npm  npx
+12、./node -v   ------查看node版本为：v8.11.4
+13、下载后的node 需要配置文件才能使用，如没有配置文件，我们也可以用以下方式来调用node：
+    /usr/local/src/node-v8.11.4-linux-x64/
+14、接下来就是将我们本机上编写的web文件在后端复制传给服务器
+    后端复制文件给服务器的命令：scp -r ~/Desktop/my_web/ root@134.175.34.221:/usr/local/src
+
+15、然后我们打开服务器，然后直接进入 cd/usr/local/src
+16、ls  ----查看有：
+    my_web   node-v8.11.4-linux-x64.tar.xz       node-v8.11.4-linux-x64
+17、cd my_web/   ------进入 my_web 文件夹
+18、ls   ----查看文件有：
+    client README.md  server   (这正是刚刚后端复制到服务器上的 my_web 文件夹内的文件内容)
+19、cd server/    ------进入server路径下,接下去会调用node
+20、sudo ln -s /usr/local/src/node-v8.11.4-linux-x64/bin/npm /usr/bin/     -------在 server 路径下调用全局node
+21、/usr/local/src/node-v8.11.4-linux-x64/bin/node ./server.js       ------调用node来打开后端的server.js
+22、前面我们已经调用了全局node了，以后要是准备重新传新页面的话，运行server.js时不用再次全局调用node了，可直接输入node server.js 在服务器上运行。
+23、然而server.js在服务器上运行时，客户端才能访问到域名下的网页，如果关闭了在服务器上的运行网页就无法上线；
+    所以，我们接下来要下载的这个工具叫做forever
+24、forevr ：一个简单的CLI工具，用于确保给定节点脚本连续运行（即永远）
+25、这个工具我们可以直接到 npm 官网去查看怎么安装，接下来我就直接安装此工具了。
+26、sudo npm install forever -g    ------在服务器上面安装forever
+27、sudo forever start server.js   －－－－－然后在server路径下永远的运行server.js在服务器上运行时，客户端才能访问到域名下的网页，如果关闭了在服务器上的运行网页就无法上线；
+28、forever list        
+－－－然后你可以打开forever list查看一下是否 forever processes 是否运行。成功运行的话会有以下信息：forever processes running.....的一条信息呈现。
+－－－即为成功运行 forever。
+29、至此我们已把所有的上线过程完成了！
+
+这一块就是介绍，如果你的网页进行更新了，你想更新线上的页面的一个步骤：
+1、首先，我们应该登录服务器，然后先结束我们的 forever 工具的运行     所以在服务器上输入------forever stop 0
+2、然后在本机后端将我们更新后的文件复制传给服务器            在后端输入------scp -r ~/Desktop/my_web/ root@134.175.34.221:/usr/local/src
+3、
